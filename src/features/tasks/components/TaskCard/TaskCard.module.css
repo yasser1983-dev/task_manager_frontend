@@ -1,0 +1,22 @@
+.card {
+    width: 100%;
+    max-width: 400px;
+    min-height: 200px;
+}
+
+.title {
+    font-weight: normal;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.description {
+
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}

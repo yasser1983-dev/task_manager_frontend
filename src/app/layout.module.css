@@ -1,0 +1,28 @@
+/* Wrapper para el Menu y el Contenido (main + children) */
+.mainContentWrapper {
+    flex: 1; /* Contenedor ocupa el espacio restante */
+    display: flex; /* Asegura que el contenido interno (Menu y main) se alinee horizontalmente */
+    flex-direction: column; /* Para que el footer se apile abajo */
+    padding-left: 150px; /* Margen izquierdo de 50px para todo el contenido principal */
+    padding-right: 100px; /* Margen derecho de 50px para todo el contenido principal */
+    padding-top: 2rem; /* Margen superior para el Menu y el Contenido (aprox 32px), similar a p-8 */
+    margin-bottom: 100px; /* Espacio antes del footer, garantizando al menos 100px */
+}
+
+/* Ajustes para el contenedor principal de los children */
+.mainContent {
+    flex: 1;
+    padding-left: 20px;
+}
+
+.titleLayout{
+    font-weight: normal;
+    font-size: 2.25rem;
+}
+
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}

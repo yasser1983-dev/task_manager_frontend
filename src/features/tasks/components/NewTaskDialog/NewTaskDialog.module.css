@@ -1,0 +1,32 @@
+.customDialog .p-dialog-header {
+    display: flex;
+    justify-content: center;
+}
+
+.customDialog .p-dialog-title {
+    font-weight: normal !important;
+    text-align: center;
+    flex: 1;
+}
+
+.customDialog .p-inputtext,
+.customDialog .p-dropdown .p-dropdown-label,
+.customDialog .p-inputtextarea {
+    background-color: #f3f3f3 !important;
+}
+
+.customDialog .p-dialog-content {
+    width: 600px;
+    max-width: 90vw;
+    margin: 0 auto;
+}
+
+.customDialog .p-dialog-content .p-fluid {
+    padding: 1rem;
+}
+
+.customDialog .p-inputtext,
+.customDialog .p-inputtextarea,
+.customDialog .p-dropdown {
+    border-radius: 6px;
+}
