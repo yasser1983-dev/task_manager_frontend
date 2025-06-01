@@ -20,3 +20,15 @@
     align-items: center;
     margin-top: 1.5rem;
 }
+
+.cardContent {
+    position: relative;
+    padding: 1rem;
+}
+
+.deleteButton {
+    position: absolute;
+    top: -2.5rem;
+    right: -1.5rem;
+    z-index: 1;
+}

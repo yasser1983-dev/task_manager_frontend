@@ -81,6 +81,43 @@ export const markTaskAsCompleted = createAsyncThunk<
     }
 );
 
+export const deleteTask = createAsyncThunk<
+    string,
+    string,
+    { state: RootState; rejectValue: string }
+>(
+    'tasks/deleteTask',
+    async (taskId: string, thunkAPI) => {
+        const state = thunkAPI.getState();
+        const reduxToken = state.auth.token;
+        const localToken = getTokenFromLocalStorage();
+        const token = reduxToken || localToken;
+
+        if (!token) {
+            return thunkAPI.rejectWithValue('No token encontrado.');
+        }
+
+        try {
+            const res = await fetch(`/api/task/delete/${taskId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Token ${token}`,
+                },
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.detail || errorData.message || `Error ${res.status}: ${res.statusText}`);
+            }
+
+            return taskId;
+        } catch (error: any) {
+            console.error('Error deleting task:', error);
+            return thunkAPI.rejectWithValue(error.message || 'Failed to delete task.');
+        }
+    }
+);
+
 
 
 const taskSlice = createSlice({
@@ -108,7 +145,7 @@ const taskSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
-
+            // --- Marcar como completado ---
             .addCase(markTaskAsCompleted.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -124,6 +161,20 @@ const taskSlice = createSlice({
             .addCase(markTaskAsCompleted.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string || 'Failed to mark task as completed.';
+            })
+            // --- Nuevos casos para deleteTask ---
+            .addCase(deleteTask.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteTask.fulfilled, (state, action: PayloadAction<string>) => {
+                state.loading = false;
+                // Filtra la tarea eliminada de la lista
+                state.tasks = state.tasks.filter(task => task.id !== action.payload);
+            })
+            .addCase(deleteTask.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string || 'Failed to delete task.';
             });
     },
 });

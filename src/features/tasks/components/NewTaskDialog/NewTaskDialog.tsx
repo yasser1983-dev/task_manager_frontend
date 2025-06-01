@@ -50,8 +50,8 @@ export default function NewTaskDialog({ visible, onHide, onSave }: NewTaskDialog
 
     const renderFooter = () => (
         <div>
-            <Button label="Cancelar" icon="pi pi-times" onClick={onHide} className="p-button-text" />
-            <Button label="Guardar" icon="pi pi-check" onClick={handleSave} autoFocus />
+            <Button label="Cancelar" onClick={onHide} className="p-button-text" />
+            <Button label="Guardar" onClick={handleSave} autoFocus />
         </div>
     );
 
@@ -63,6 +63,7 @@ export default function NewTaskDialog({ visible, onHide, onSave }: NewTaskDialog
             modal
             footer={renderFooter}
             onHide={onHide}
+            headerClassName={styles.dialogHeader}
         >
             <div className="p-fluid">
                 <div className="p-field mb-4">
