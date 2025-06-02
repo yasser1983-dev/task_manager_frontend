@@ -4,10 +4,23 @@ import { TaskCardProps } from '@/features/tasks/taskTypes';
 import Circle from '@/components/Circle/Circle';
 import styles from './TaskCard.module.css';
 import {useTaskActions} from "@/features/tasks/hooks/useTaskActions";
-
+import {confirmPopup} from 'primereact/confirmpopup';
 
 export default function TaskCard({ task }: TaskCardProps) {
     const { handleMarkCompleted, handleDeleteTask } = useTaskActions();
+
+    const confirmDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: '¿Estás seguro de que quieres eliminar esta tarea?',
+            icon: 'pi pi-info-circle',
+            acceptLabel: 'Sí',
+            rejectLabel: 'No',
+            acceptClassName: 'p-button-danger',
+            accept: () => handleDeleteTask(task.id),
+            reject: () => { }
+        });
+    };
 
     const cardStyles = {
         border: `2px solid ${task.category.color}`,
@@ -24,7 +37,7 @@ export default function TaskCard({ task }: TaskCardProps) {
                     severity="danger"
                     aria-label="Eliminar"
                     className={styles.deleteButton}
-                    onClick={() => handleDeleteTask(task.id)}
+                    onClick={confirmDelete}
                 />
                 <div className={styles.title}>
                     {task.title}
@@ -42,6 +55,5 @@ export default function TaskCard({ task }: TaskCardProps) {
                 </div>
             </div>
         </Card>
-
     );
 }

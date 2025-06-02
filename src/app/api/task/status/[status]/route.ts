@@ -24,7 +24,6 @@ export async function GET(req: NextRequest) {
                 ...(authHeader && { Authorization: authHeader }),
             },
         });
-        console.log(response);
         if (!response.ok) {
             throw new Error(`Error ${response.status}: ${response.statusText}`);
         }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Category } from '@/features/tasks/taskTypes';
-import {RootState} from "@/store";
+import {AppDispatch, RootState} from "@/store";
 import {useDispatch} from 'react-redux';
 import {addTask} from "@/features/tasks/taskSlice";
 
@@ -26,8 +26,7 @@ export const useNewTaskDialog = () => {
     const [newTaskName, setNewTaskName] = useState('');
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-    const selectAuthToken = (state: RootState) => state.auth.token;
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleAddTaskClick = () => {
         setDisplayNewTaskDialog(true);
@@ -49,9 +48,9 @@ export const useNewTaskDialog = () => {
         setSelectedCategory(null);
     };
 
-    const handleSaveNewTaskActual = async (taskData: { name: string; description: string; category: any }) => {
+    const handleSaveNewTaskActual = (taskData: { title: string; description: string; category_id: 0 }) => {
         try {
-            await dispatch(addTask(taskData)).unwrap();
+            dispatch(addTask(taskData));
         } catch (error: unknown) {
             let errorMessage = `Fallido el intento para agregar la tarea.`;
             if (error instanceof Error) {

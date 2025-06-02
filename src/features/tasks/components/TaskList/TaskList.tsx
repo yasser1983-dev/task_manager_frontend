@@ -4,6 +4,7 @@ import {useTasks} from '@/features/tasks/hooks/useTasks';
 import TaskCard from '../TaskCard/TaskCard';
 import styles from './TaskList.module.css';
 import TaskFilterTabs from "@/features/tasks/components/TaskFilter/TaskFilterTabs";
+import {ConfirmPopup} from "primereact/confirmpopup";
 
 
 export default function TaskList() {
@@ -23,6 +24,7 @@ export default function TaskList() {
                     ))}
                 </div>
             )}
+            <ConfirmPopup />
         </>
     );
 }

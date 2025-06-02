@@ -27,11 +27,7 @@ export const useTaskActions = () => {
     };
 
     const handleDeleteTask = (taskId: string) => {
-        if (!window.confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-            return;
-        }
-
-        try {
+       try {
             dispatch(deleteTask(taskId));
             console.log(`Tarea ${taskId} eliminada exitosamente.`);
         } catch (error: unknown) {
