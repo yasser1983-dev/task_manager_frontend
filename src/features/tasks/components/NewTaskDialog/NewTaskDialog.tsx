@@ -101,6 +101,7 @@ export default function NewTaskDialog({ visible, onHide, onSave }: NewTaskDialog
                         optionLabel="name"
                         placeholder="Selecciona una categoría"
                         filter
+                        appendTo="self"
                         className={categoryError ? 'p-invalid' : ''}
                     />
                     {categoryError && <small className="p-error block">{categoryError}</small>}
