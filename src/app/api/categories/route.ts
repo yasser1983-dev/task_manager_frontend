@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+import NodeCache from 'node-cache';
+
+const cache = new NodeCache({ stdTTL: 60 }); // TTL en segundos
+
 export async function GET(request: Request) {
     try {
         const backendUrl = process.env.DJANGO_BACKEND_URL;
@@ -7,6 +11,13 @@ export async function GET(request: Request) {
 
         if (!authHeader) {
             return NextResponse.json({ message: 'No autenticado. Token no encontrado.' }, { status: 401 });
+        }
+
+        const cacheKey = `categories:${authHeader}`;
+        const cachedData = cache.get(cacheKey);
+
+        if (cachedData) {
+            return NextResponse.json(cachedData, { status: 200 });
         }
 
         const djangoRes = await fetch(`${backendUrl}/api/categories/`, {
@@ -23,9 +34,10 @@ export async function GET(request: Request) {
             return NextResponse.json(djangoData, { status: djangoRes.status });
         }
 
-        // Si Django devuelve un objeto paginado, extrae los resultados para el frontend
-        // O simplemente devuelve el data si tu backend ya no pagina aquí
         const categories = djangoData.results || djangoData;
+
+        // Guardar en caché
+        cache.set(cacheKey, categories);
 
         return NextResponse.json(categories, { status: 200 });
 

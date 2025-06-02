@@ -5,8 +5,9 @@ import Circle from '@/components/Circle/Circle';
 import styles from './TaskCard.module.css';
 import {useTaskActions} from "@/features/tasks/hooks/useTaskActions";
 import {confirmPopup} from 'primereact/confirmpopup';
+import React from "react";
 
-export default function TaskCard({ task }: TaskCardProps) {
+function TaskCard({ task }: TaskCardProps) {
     const { handleMarkCompleted, handleDeleteTask } = useTaskActions();
 
     const confirmDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,3 +58,5 @@ export default function TaskCard({ task }: TaskCardProps) {
         </Card>
     );
 }
+
+export default React.memo(TaskCard);

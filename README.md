@@ -151,3 +151,64 @@ Este proyecto es una aplicación Next.js, lo que la hace ideal para desplegar en
     # yarn build
 ```
 
+## Patrones de diseño aplicados
+
+a. **Patrón de Componentes Reutilizables**:
+
+Se crea una carpeta components/ con componentes reutilizables que se emplean en varias pantallas, como OrderForm,
+ItemList, etc. Esta separación permite que el código sea más modular y fácil de mantener.
+
+b. **Patrón de State Management con Redux Toolkit**
+
+Se emplea Redux Toolkit para gestionar el estado de la aplicación, como el estado de la sesión de usuario (authSlice),
+las órdenes (orderSlice), y el reporte diario (reportSlice).
+
+c. **Presentational and Container Components (Separación de lógica y UI)**
+
+Presentational Components: Solo renderizan UI, no tienen lógica de negocio.
+
+Container Components: Contienen lógica de negocio y manejo de estado.
+
+d. **Hooks Patterns**
+
+Extraer lógica reutilizable en funciones que usan hooks.
+
+e. **Feature-Based Folder Structure**
+
+Organizar carpetas por funcionalidad y no por tipo de archivo
+
+f. **Feature-based Architecture (orientada a funcionalidades)**
+    Este patrón organiza el código por feature o dominio de negocio. Facilita la escalabilidad.Reduce el acoplamiento entre módulos.
+    Mejora la mantenibilidad y el entendimiento del código. Hace más simple trabajar en paralelo en distintos equipos o funcionalidades.
+
+g. **Relación con Domain-Driven Design (DDD)**
+    Cada carpeta dentro de features/ representa un Bounded Context. 
+
+h. Component-Based Architecture (Arquitectura Basada en Componentes)
+Este es el patrón fundamental de React. El proyecto está dividido en componentes reutilizables, 
+como TaskCard, NewTaskDialog, Circle, etc.
+
+i. API Routes / Backend for Frontend (BFF) Pattern (Patrón de Rutas de API / Backend para el Frontend)
+
+Uso de las API Routes de Next.js (src/app/api/...) para intermediar entre el frontend y el backend de Django 
+es un ejemplo del patrón BFF.
+
+## Optimización
+
+Se realizó optimización aplicado lazo load con componentes dinámicos dentro del componente TaskList, para cargar dinámicamente
+el componente TaskCard.
+
+Además se aplicó memory caché a las peticiones del lado del servidor de Next JS a las categorías porque 
+conceptualmente cambian poco. Se utilizó node-cache.
+
+Se optimizó además utilizando la memoización de componentes. Se le aplicó a TaskCard, Circle.
+
+Además se configuró Next.js para activar las compresiones,  
+análisis del bundle para detectar JS pesados, optimizaciones de imágenes y eso del modo reactStrictMode para desarrollo, el cual
+activa advertencias y verifica errores comunes.
+
+Se instaló next-pwa porque simplifica la configuración y creación de PWAs en proyectos Next.js. Entre otras cosas:
+1. Configura automáticamente el service worker (que maneja el cacheo offline)
+2. Genera el archivo manifest.json (que permite que la app se instale)
+3. Maneja estrategias de cache para assets, páginas, APIs
+4. Compatible con SSR y rutas dinámicas de Next.js

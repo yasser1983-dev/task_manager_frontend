@@ -1,11 +1,15 @@
 'use client';
 
 import {useTasks} from '@/features/tasks/hooks/useTasks';
-import TaskCard from '../TaskCard/TaskCard';
 import styles from './TaskList.module.css';
 import TaskFilterTabs from "@/features/tasks/components/TaskFilter/TaskFilterTabs";
 import {ConfirmPopup} from "primereact/confirmpopup";
+import dynamic from 'next/dynamic';
 
+const TaskCard = dynamic(() => import('../TaskCard/TaskCard'), {
+    loading: () => <div style={{ height: 150 }}>Cargando tarea...</div>,
+    ssr: false
+});
 
 export default function TaskList() {
     const {tasks} = useTasks();

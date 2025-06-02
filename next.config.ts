@@ -1,7 +1,23 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    reactStrictMode: true,
+    compress: true,
+    images: {
+        domains: ['localhost'],
+    },
 };
 
-export default nextConfig;
+// Importa y configura bundle analyzer
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+});
+
+// Importa y configura next-pwa
+const withPWA = require('next-pwa')({
+    dest: 'public',
+    register: true,
+    skipWaiting: true,
+});
+
+// Aplica ambos plugins sobre nextConfig (encadenados)
+module.exports = withBundleAnalyzer(withPWA(nextConfig));
