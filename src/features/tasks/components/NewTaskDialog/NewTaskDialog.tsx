@@ -16,42 +16,56 @@ export default function NewTaskDialog({ visible, onHide, onSave }: NewTaskDialog
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-    const { categories, loading, error } = useCategories();
+    const [taskNameError, setTaskNameError] = useState('');
+    const [categoryError, setCategoryError] = useState('');
 
-    // Resetear el formulario cada vez que el diálogo se haga visible
+    const { categories} = useCategories();
+
     useEffect(() => {
         if (visible) {
             setNewTaskName('');
             setNewTaskDescription('');
             setSelectedCategory(null);
-           // setError(''); // Asegúrate de que este error se maneje localmente o lo remueves
+            setTaskNameError('');
+            setCategoryError('');
         }
     }, [visible]);
 
-    const handleSave = () => {
-        // Validación básica
+    const validate = () => {
+        let valid = true;
+
         if (!newTaskName.trim()) {
-            alert('El nombre de la tarea es obligatorio.'); // Considera usar un Message de PrimeReact en su lugar
-            return;
-        }
-        if (!selectedCategory) {
-            alert('Debes seleccionar una categoría.'); // Considera usar un Message de PrimeReact en su lugar
-            return;
+            setTaskNameError('El nombre de la tarea es obligatorio.');
+            valid = false;
+        } else {
+            setTaskNameError('');
         }
 
-        // Llamar a la función onSave pasada por las props
+        if (!selectedCategory) {
+            setCategoryError('Debes seleccionar una categoría.');
+            valid = false;
+        } else {
+            setCategoryError('');
+        }
+
+        return valid;
+    };
+
+    const handleSave = () => {
+        if (!validate()) return;
+
         onSave({
             name: newTaskName,
             description: newTaskDescription,
             category: selectedCategory,
         });
-        onHide(); // Cerrar el diálogo después de guardar
+        onHide();
     };
 
     const renderFooter = () => (
-        <div>
-            <Button label="Cancelar" onClick={onHide} className="p-button-text" />
-            <Button label="Guardar" onClick={handleSave} autoFocus />
+        <div className={styles.dialogFooter}>
+            <Button label="Cancelar" onClick={onHide} severity="secondary" className={styles.cancelButton} />
+            <Button label="Guardar" onClick={handleSave} className={styles.saveButton} autoFocus />
         </div>
     );
 
@@ -66,17 +80,19 @@ export default function NewTaskDialog({ visible, onHide, onSave }: NewTaskDialog
             headerClassName={styles.dialogHeader}
         >
             <div className="p-fluid">
-                <div className="p-field mb-4">
-                    <label htmlFor="taskName" className="mb-2 block">Nombre de la Tarea</label>
+                <div className="mb-4">
+                    <label htmlFor="taskName" className="block mb-2">Nombre de la Tarea</label>
                     <InputText
                         id="taskName"
                         value={newTaskName}
                         onChange={(e) => setNewTaskName(e.target.value)}
-                        required
+                        className={taskNameError ? 'p-invalid' : ''}
                     />
+                    {taskNameError && <small className="p-error block">{taskNameError}</small>}
                 </div>
-                <div className="p-field mb-4">
-                    <label htmlFor="category" className="font-bold mb-2 block">Categoría</label>
+
+                <div className="mb-4">
+                    <label htmlFor="category" className="block mb-2">Categoría</label>
                     <Dropdown
                         id="category"
                         value={selectedCategory}
@@ -85,13 +101,13 @@ export default function NewTaskDialog({ visible, onHide, onSave }: NewTaskDialog
                         optionLabel="name"
                         placeholder="Selecciona una categoría"
                         filter
-                        // loading={categoriesLoading}
-                        // disabled={categoriesLoading || categoriesError}
+                        className={categoryError ? 'p-invalid' : ''}
                     />
-                    {/*{categoriesError && <small className="p-error block mt-1">{categoriesError}</small>}*/}
+                    {categoryError && <small className="p-error block">{categoryError}</small>}
                 </div>
-                <div className="p-field mb-4">
-                    <label htmlFor="description" className="font-bold mb-2 block">Descripción</label>
+
+                <div className="mb-4">
+                    <label htmlFor="description" className="block mb-2">Descripción</label>
                     <InputTextarea
                         id="description"
                         value={newTaskDescription}

@@ -27,3 +27,9 @@ export interface NewTaskDialogProps {
     onHide: () => void;
     onSave: (taskData: { name: string; description: string; category: Category | null }) => void;
 }
+
+export interface NewTaskData {
+    title: string;
+    description: string;
+    category_id: number; // El backend espera category_id, no el objeto Category completo
+}

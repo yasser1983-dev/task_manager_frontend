@@ -14,39 +14,9 @@ export default function TaskActions({}: TaskActionsProps) {
     const {
         displayNewTaskDialog,
         handleAddTaskClick,
-        handleSaveNewTask,
-        handleCancelNewTask
+        handleCancelNewTask,
+        handleSaveNewTaskActual
     } = useNewTaskDialog();
-
-    const handleSaveNewTaskActual = async (taskData: { name: string; description: string; category: any }) => {
-        console.log('Attempting to save new task:', taskData);
-        try {
-            const response = await fetch('/api/tasks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    //'Authorization': `Token ${yourAuthToken}`
-                },
-                body: JSON.stringify({
-                    title: taskData.name,
-                    description: taskData.description,
-                    category: taskData.category.id,
-                    status: "pending", // Default for new tasks
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Fallo al crear tarea.');
-            }
-
-            const result = await response.json();
-            console.log('Tarea creada exitosamente:', result);
-            handleSaveNewTask();
-        } catch (error) {
-            console.error('Error crando la tarea:', error);
-        }
-    };
 
 
     return (

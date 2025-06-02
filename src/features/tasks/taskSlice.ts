@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import {TaskTypes, TaskState} from "@/features/tasks/taskTypes";
+import {TaskTypes, TaskState, NewTaskData} from "@/features/tasks/taskTypes";
 import {RootState} from "@/store";
 import { getTokenFromLocalStorage } from '@libs/utils';
 const initialState: TaskState = {
@@ -118,18 +118,58 @@ export const deleteTask = createAsyncThunk<
     }
 );
 
+// --- Nuevo Async Thunk para Adicionar Tarea ---
+export const addTask = createAsyncThunk<
+    TaskTypes,
+    NewTaskData,
+    { state: RootState; rejectValue: string }
+>(
+    'tasks/addTask',
+    async (taskData: NewTaskData, thunkAPI) => {
+        const state = thunkAPI.getState();
+        const reduxToken = state.auth.token;
+        const localToken = getTokenFromLocalStorage();
+        const token = reduxToken || localToken;
+
+        if (!token) {
+            return thunkAPI.rejectWithValue('No token encontrado.');
+        }
+
+        try {
+            const res = await fetch(`/api/task/add`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Token ${token}`,
+                },
+                body: JSON.stringify(taskData),
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.detail || errorData.message || `Error ${res.status}: ${res.statusText}`);
+            }
+
+            const data = await res.json();
+            return data as TaskTypes;
+        } catch (error: any) {
+            console.error('Error agregando tarea:', error);
+            return thunkAPI.rejectWithValue(error.message || 'Fallido para agregar tarea.');
+        }
+    }
+);
+
 
 
 const taskSlice = createSlice({
     name: 'tasks',
     initialState,
     reducers: {
-        addTask: (state, action: PayloadAction<TaskTypes>) => {
-            state.tasks.push(action.payload);
-        },
-        addTasks: (state, action: PayloadAction<TaskTypes[]>) => {
-            state.tasks = action.payload;
-        },
+        // addTask: (state, action: PayloadAction<TaskTypes>) => {
+        //     state.tasks.push(action.payload);
+        // },
+        // addTasks: (state, action: PayloadAction<TaskTypes[]>) => {
+        //     state.tasks = action.payload;
+        // },
     },
     extraReducers: builder => {
         builder
@@ -160,9 +200,9 @@ const taskSlice = createSlice({
             })
             .addCase(markTaskAsCompleted.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload as string || 'Failed to mark task as completed.';
+                state.error = action.payload as string || 'Fallido para marcar como completado.';
             })
-            // --- Nuevos casos para deleteTask ---
+            // --- Para eliminar tareas ---
             .addCase(deleteTask.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -174,10 +214,23 @@ const taskSlice = createSlice({
             })
             .addCase(deleteTask.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload as string || 'Failed to delete task.';
+                state.error = action.payload as string || 'Fallido para eliminar tarea.';
+            })
+            // --- Para agregar tareas ---
+            .addCase(addTask.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addTask.fulfilled, (state, action: PayloadAction<TaskTypes>) => {
+                state.loading = false;
+                state.tasks.push(action.payload);
+            })
+            .addCase(addTask.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string || 'Fallido para agregar tarea.';
             });
     },
 });
 
-export const { addTask, addTasks } = taskSlice.actions;
+// export const { addTask, addTasks } = taskSlice.actions;
 export default taskSlice.reducer;

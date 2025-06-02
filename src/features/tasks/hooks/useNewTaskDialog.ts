@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { Category } from '@/features/tasks/taskTypes';
+import {RootState} from "@/store";
+import {useDispatch} from 'react-redux';
+import {addTask} from "@/features/tasks/taskSlice";
 
 /**
  * Custom hook to manage the state and actions related to the "New Task" dialog.
@@ -23,36 +26,47 @@ export const useNewTaskDialog = () => {
     const [newTaskName, setNewTaskName] = useState('');
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+    const selectAuthToken = (state: RootState) => state.auth.token;
+    const dispatch = useDispatch();
 
-    // Function to open the dialog
     const handleAddTaskClick = () => {
         setDisplayNewTaskDialog(true);
     };
 
-    // Function to handle saving the new task (placeholder logic)
-    const handleSaveNewTask = () => {
-        console.log('Nueva tarea desde hook:', {
-            name: newTaskName,
-            description: newTaskDescription,
-            category: selectedCategory,
-        });
-        // You would typically call an API here to save the task
-        // After successful save, reset and close
+    const resetTaskForm = () => {
         resetForm();
         setDisplayNewTaskDialog(false);
     };
 
-    // Function to handle cancelling or hiding the dialog
     const handleCancelNewTask = () => {
         resetForm();
         setDisplayNewTaskDialog(false);
     };
 
-    // Helper function to reset the form fields
     const resetForm = () => {
         setNewTaskName('');
         setNewTaskDescription('');
         setSelectedCategory(null);
+    };
+
+    const handleSaveNewTaskActual = async (taskData: { name: string; description: string; category: any }) => {
+        try {
+            await dispatch(addTask(taskData)).unwrap();
+        } catch (error: unknown) {
+            let errorMessage = `Fallido el intento para agregar la tarea.`;
+            if (error instanceof Error) {
+                errorMessage += ` ${error.message}`;
+            } else if (typeof error === 'string') {
+                errorMessage += ` ${error}`;
+            } else if (typeof error === 'object' && error !== null && 'message' in error) {
+                if (typeof (error as { message: unknown }).message === 'string') {
+                    errorMessage += ` ${(error as { message: string }).message}`;
+                } else {
+                    errorMessage += ` ${JSON.stringify(error)}`;
+                }
+            }
+            console.error(errorMessage, error);
+        }
     };
 
     return {
@@ -64,7 +78,7 @@ export const useNewTaskDialog = () => {
         selectedCategory,
         setSelectedCategory,
         handleAddTaskClick,
-        handleSaveNewTask,
         handleCancelNewTask,
+        handleSaveNewTaskActual
     };
 };
