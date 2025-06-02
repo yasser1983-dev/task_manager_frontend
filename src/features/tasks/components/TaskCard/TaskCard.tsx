@@ -4,7 +4,6 @@ import { TaskCardProps } from '@/features/tasks/taskTypes';
 import Circle from '@/components/Circle/Circle';
 import styles from './TaskCard.module.css';
 import {useTaskActions} from "@/features/tasks/hooks/useTaskActions";
-import { PrimeIcons } from 'primereact/api';
 
 
 export default function TaskCard({ task }: TaskCardProps) {
@@ -33,11 +32,11 @@ export default function TaskCard({ task }: TaskCardProps) {
                 <p className={styles.description}>{task.description}</p>
                 <div className={styles.footer}>
                     <Circle color={task.category.color} />
-                    {task.category.color !== "completed" && (
+                    {task.status !== "completed" && (
                         <Button
                             label="Finalizar"
                             className="p-button-success p-button-sm"
-                            onClick={handleMarkCompleted}
+                            onClick={() =>handleMarkCompleted(task.id)}
                         />
                     )}
                 </div>

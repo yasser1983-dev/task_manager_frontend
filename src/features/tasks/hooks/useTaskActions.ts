@@ -1,21 +1,14 @@
-import { markTaskAsCompleted, deleteTask } from '@/features/tasks/taskSlice'; // Importa ambos thunks
-import { useCallback } from 'react';
-import {useDispatch} from "react-redux"; // Para memoizar las funciones de callback
+import { markTaskAsCompleted, deleteTask } from '@/features/tasks/taskSlice';
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "@/store";
 
-interface UseTaskActionsResult {
-    handleMarkCompleted: (taskId: string) => Promise<void>;
-    handleDeleteTask: (taskId: string) => Promise<void>;
-    loading: boolean; // Opcional: si quieres exponer el estado de carga desde el hook
-    error: string | null; // Opcional: si quieres exponer errores
-}
+export const useTaskActions = () => {
+    const dispatch = useDispatch<AppDispatch>();
 
-export const useTaskActions = (): UseTaskActionsResult => {
-    const dispatch = useDispatch();
-
-    const handleMarkCompleted = useCallback(async (taskId: string) => {
+    const handleMarkCompleted = (taskId: string) => {
         try {
-            await dispatch(markTaskAsCompleted(taskId)).unwrap();
-            console.log(`Tarea ${taskId} marcada como completada.`);
+            dispatch(markTaskAsCompleted(taskId));
+
         } catch (error: unknown) {
             let errorMessage = `Fallido el intento para marcar la tarea ${taskId} como completada.`;
             if (error instanceof Error) {
@@ -31,15 +24,15 @@ export const useTaskActions = (): UseTaskActionsResult => {
             }
             console.error(errorMessage, error);
         }
-    }, [dispatch]);
+    };
 
-    const handleDeleteTask = useCallback(async (taskId: string) => {
+    const handleDeleteTask = (taskId: string) => {
         if (!window.confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
             return;
         }
 
         try {
-            await dispatch(deleteTask(taskId)).unwrap();
+            dispatch(deleteTask(taskId));
             console.log(`Tarea ${taskId} eliminada exitosamente.`);
         } catch (error: unknown) {
             let errorMessage = `Fallido el intento para eliminar la tarea ${taskId}.`;
@@ -56,12 +49,12 @@ export const useTaskActions = (): UseTaskActionsResult => {
             }
             console.error(errorMessage, error);
         }
-    }, [dispatch]);
+    };
 
     return {
         handleMarkCompleted,
         handleDeleteTask,
-        loading: false, // Reemplazar con el estado de carga real si lo necesitas
-        error: null,    // Reemplazar con el estado de error real si lo necesitas
+        loading: false,
+        error: null,
     };
 };

@@ -163,14 +163,7 @@ export const addTask = createAsyncThunk<
 const taskSlice = createSlice({
     name: 'tasks',
     initialState,
-    reducers: {
-        // addTask: (state, action: PayloadAction<TaskTypes>) => {
-        //     state.tasks.push(action.payload);
-        // },
-        // addTasks: (state, action: PayloadAction<TaskTypes[]>) => {
-        //     state.tasks = action.payload;
-        // },
-    },
+    reducers: {},
     extraReducers: builder => {
         builder
             .addCase(fetchTasksByCategory.pending, state => {
@@ -193,10 +186,7 @@ const taskSlice = createSlice({
             .addCase(markTaskAsCompleted.fulfilled, (state, action: PayloadAction<TaskTypes>) => {
                 state.loading = false;
                 const updatedTask = action.payload;
-
-                state.tasks = state.tasks.map(task =>
-                    task.id === updatedTask.id ? updatedTask : task
-                );
+                state.tasks = state.tasks.filter(task => task.id !== updatedTask.id);
             })
             .addCase(markTaskAsCompleted.rejected, (state, action) => {
                 state.loading = false;
@@ -232,5 +222,4 @@ const taskSlice = createSlice({
     },
 });
 
-// export const { addTask, addTasks } = taskSlice.actions;
 export default taskSlice.reducer;
