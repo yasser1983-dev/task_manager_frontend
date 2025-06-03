@@ -212,3 +212,12 @@ Se instaló next-pwa porque simplifica la configuración y creación de PWAs en 
 2. Genera el archivo manifest.json (que permite que la app se instale)
 3. Maneja estrategias de cache para assets, páginas, APIs
 4. Compatible con SSR y rutas dinámicas de Next.js
+
+## Utilizar commitizen
+
+Para estandarizar el formato del mensaje de commit, se utiliza commitizen, el comando es el siguiente:
+```bash
+    git add .
+    npm run commit 
+    git push
+```
