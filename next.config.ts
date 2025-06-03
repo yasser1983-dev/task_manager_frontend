@@ -7,17 +7,20 @@ const nextConfig = {
     },
 };
 
-// Importa y configura bundle analyzer
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
 });
 
-// Importa y configura next-pwa
 const withPWA = require('next-pwa')({
     dest: 'public',
     register: true,
     skipWaiting: true,
 });
 
-// Aplica ambos plugins sobre nextConfig (encadenados)
-module.exports = withBundleAnalyzer(withPWA(nextConfig));
+const isTurbopack = process.env.NEXT_RUNTIME === 'edge'; // o alguna variable para detectar turbopack
+
+if (isTurbopack) {
+    module.exports = nextConfig;
+} else {
+    module.exports = withBundleAnalyzer(withPWA(nextConfig));
+}

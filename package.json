@@ -1,6 +1,7 @@
 {
   "name": "task_frontend",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "config": {
     "commitizen": {
@@ -12,16 +13,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "commit": "cz"
+    "commit": "cz",
+    "test": "jest"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^15.3.3",
-    "@reduxjs/toolkit": "^2.8.2",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
     "classnames": "^2.5.1",
-    "jest": "^29.7.0",
-    "msw": "^2.8.7",
     "next": "15.3.3",
     "next-pwa": "^5.6.0",
     "node-cache": "^5.1.2",
@@ -33,13 +30,24 @@
     "redux": "^5.0.1"
   },
   "devDependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.0.0-beta.3",
+    "msw": "^2.9.0",
+    "redux-mock-store": "^1.5.5",
     "tailwindcss": "^4",
+    "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
